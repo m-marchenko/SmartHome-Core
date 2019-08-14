@@ -1,0 +1,80 @@
+﻿@using SmartHome.Model;
+@using SmartHome.Models.Security;
+@model SmartHomeUser
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+@{
+    var profile = Model.Profiles.FirstOrDefault(m => m.Name.Equals(Model.ActiveProfileName));
+}
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
+    <div class="container">
+        <a class="navbar-brand" href="#">@profile.DisplayName</a>
+
+        <ul class="navbar-nav justify-content-end">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"></a>
+                <div class="dropdown-menu">
+                    @foreach (var p in Model.Profiles)
+                    {
+                        <a class="dropdown-item" id="@p.Name" asp-controller="Home" asp-action="Profile" asp-route-profile="@p.Name">
+                            @p.DisplayName
+                        </a>
+                    }
+
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div id="accordion">
+    @foreach (var s in profile.Content)
+    {
+        <div class="card">
+            <div class="card-header">
+                <a class="collapsed card-link" name="@s.Name" data-toggle="collapse" href="#@s.ClientId">@s.DisplayName</a>
+            </div>
+            <div id="@s.ClientId" class="collapse" data-parent="#accordion">
+                <div class="card-body">
+                    <partial name="CompositeObject" model='s' />
+
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
+
+
+@*@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $(".dropdown-item").click(function () {
+                debugger;
+                alert(this.id);
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("Profile")/' + this.id,
+                    cache: false,
+                    beforeSend: function () {
+
+                    },
+                    complete: function () {
+
+                    },
+
+                    success: function (data) {
+                    },
+                    error: function (err) {
+                        //debugger;
+                    }
+                });
+
+            });
+        });
+    </script>
+}*@
+

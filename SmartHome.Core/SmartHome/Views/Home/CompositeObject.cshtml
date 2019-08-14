@@ -1,0 +1,63 @@
+﻿@using SmartHome.Model;
+@model CompositeObject
+
+
+    @if (Model.Sensors != null && Model.Sensors.Any())
+    {
+        <div id='sensors_@Model.ClientId'>            
+            <partial name="Sensors" for="Sensors" />
+        </div>
+    }
+
+    @if (Model.Commands != null && Model.Commands.Any())
+    {
+        <div>
+            @foreach (var cmd in Model.Commands)
+            {
+                <button type="button" name="@Model.ClientId" id="@cmd.Id" class="btn btn-primary">@cmd.DisplayName</button>
+            }
+        </div>
+        <div class="divider">
+            <hr />
+        </div>
+    }
+
+
+
+    @if (Model.Units != null && Model.Units.Any())
+    {
+        <div class="card-body">
+            <button data-toggle="collapse" data-target="#units_@Model.ClientId">&gt;</button>
+        </div>
+        <div id="units_@Model.ClientId" class="collapse border-primary">
+
+            <ul class="nav nav-tabs">
+                @foreach (var cobj in Model.Units)
+                {
+                    var cl = (cobj.ClientId == Model.Units.FirstOrDefault().ClientId) ? "active" : "";
+                    <li class="nav-item">
+                        <a class="nav-link @cl" name="@Model.Name" data-toggle="tab" href="#@cobj.ClientId">@cobj.DisplayName</a>
+                    </li>
+                }
+            </ul>
+
+            <div class="tab-content">
+                @foreach (var cobj in Model.Units)
+                {
+                    var cl = (cobj.ClientId == Model.Units.FirstOrDefault().ClientId) ? "container tab-pane active" : "container tab-pane";
+                    <div id="@cobj.ClientId" class="@cl">
+                        <partial name="CompositeObject" model="cobj" />
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    }
+
+
+
+
+
+
+
